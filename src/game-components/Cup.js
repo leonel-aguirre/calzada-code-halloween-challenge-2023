@@ -1,9 +1,12 @@
 class Cup {
-  constructor(screenWidth) {
+  constructor(screenWidth, screenHeight) {
     this.screenWidth = screenWidth
-    this.positionX = 0
-    this.positionY = 0
+    this.screenHeight = screenHeight
+
     this.size = 100
+
+    this.pX = screenWidth / 2 - this.size / 2
+    this.pY = screenHeight - 40
   }
 
   /**
@@ -13,32 +16,27 @@ class Cup {
    */
   draw(p) {
     p.push()
-    p.rect(this.positionX, this.positionY, this.size, 20)
+    p.rect(this.pX, this.pY, this.size, 20)
     p.pop()
   }
 
-  initializePosition(positionX, positionY) {
-    this.positionX = positionX - this.size / 2
-    this.positionY = positionY
-  }
-
   moveRight() {
-    let newPositionX = this.positionX + 10
+    let newPX = this.pX + 10
 
-    if (newPositionX >= this.screenWidth - this.size) {
-      this.positionX = this.screenWidth - this.size
+    if (newPX >= this.screenWidth - this.size) {
+      this.pX = this.screenWidth - this.size
     } else {
-      this.positionX = newPositionX
+      this.pX = newPX
     }
   }
 
   moveLeft() {
-    let newPositionX = this.positionX - 10
+    let newPX = this.pX - 10
 
-    if (newPositionX <= 0) {
-      this.positionX = 0
+    if (newPX <= 0) {
+      this.pX = 0
     } else {
-      this.positionX = newPositionX
+      this.pX = newPX
     }
   }
 }
