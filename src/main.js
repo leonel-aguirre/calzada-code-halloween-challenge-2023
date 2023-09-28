@@ -20,7 +20,6 @@ const sketch = (p) => {
     p.background("black")
 
     game.nextLevel()
-    game.nextLevel()
   }
 
   // Draw loop.
