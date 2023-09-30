@@ -84,6 +84,19 @@ class Game {
     p.text(`Points: ${this.points}`, 10, 20)
     p.text(`Level: ${this.level}`, 10, 40)
     p.pop()
+
+    if (this.gameState === GAME_STATE.PAUSED) {
+      p.push()
+      p.noStroke()
+      p.fill("#ffffff88")
+      p.rect(0, 0, this.width, this.height)
+      p.fill("#000000")
+      p.textAlign(p.CENTER, p.CENTER)
+      p.textSize(48)
+      p.textStyle(p.BOLD)
+      p.text("PAUSED", this.width / 2, this.height / 2)
+      p.pop()
+    }
   }
 
   setGameState(gameState) {

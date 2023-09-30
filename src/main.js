@@ -32,8 +32,6 @@ const sketch = (p) => {
   }
 
   p.keyTyped = () => {
-    console.log(p.keyCode)
-
     if (
       p.keyCode === 32 &&
       (game.gameState === GAME_STATE.PAUSED ||
