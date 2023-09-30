@@ -5,6 +5,7 @@ export const GAME_STATE = {
   MAIN_SCREEN: 0,
   PLAYING: 1,
   PAUSED: 2,
+  END_GAME: 3,
 }
 
 class Game {
@@ -13,6 +14,8 @@ class Game {
 
     this.width = width
     this.height = height
+
+    this.timer = 0
 
     this.points = 0
     this.level = 0
@@ -23,6 +26,11 @@ class Game {
     this.cup = new Cup(this.p, this.width, this.height)
 
     this.gameState = gameState
+
+    this.candyAppearanceRate = 1000
+    // this.candyAppearanceProbability
+
+    this.strikes = 0
   }
 
   nextLevel() {
@@ -32,12 +40,12 @@ class Game {
     this.velocityLimit += 1
 
     // for (let i = 0; i < this.maxCandies; i++) {
-    this.candies.push(
-      new Candy(this.p, this.width, this.height, this.candySpeed)
-    )
+    // this.candies.push(
+    //   new Candy(this.p, this.width, this.height, this.candySpeed)
+    // )
     // }
 
-    this.candies.forEach((candy) => candy.setVelocityLimit(this.velocityLimit))
+    // this.candies.forEach((candy) => candy.setVelocityLimit(this.velocityLimit))
   }
 
   keyEvents(p) {
@@ -52,21 +60,40 @@ class Game {
 
   update(p) {
     if (this.gameState === GAME_STATE.PLAYING) {
+      if (p.millis() >= this.candyAppearanceRate + this.timer) {
+        this.candies.push(new Candy(this.p, this.width, this.velocityLimit))
+        this.timer = p.millis()
+      }
+
       this.candies.forEach((candy) => candy.update())
 
-      this.candies.forEach((candy) => {
-        if (
-          candy.position.x > this.cup.position.x &&
-          candy.position.x < this.cup.position.x + this.cup.size &&
-          candy.position.y > this.cup.position.y
-        ) {
-          candy.position.x = Math.random() * this.height
-          candy.position.y = 0
+      this.candies.forEach((candy, index) => {
+        // Candy is under cup Y position.
+        if (candy.position.y > this.cup.position.y) {
+          // Candy is between cup bounds.
+          if (
+            candy.position.x > this.cup.position.x &&
+            candy.position.x < this.cup.position.x + this.cup.size
+          ) {
+            const [caughtCandy] = this.candies.splice(index, 1)
 
-          this.points += 1
+            if (caughtCandy.isSuspicious) {
+              this.strikes += 1
 
-          if (this.points % 5 === 0) {
-            this.nextLevel()
+              if (this.strikes === 3) {
+                this.gameState = GAME_STATE.END_GAME
+              }
+            } else {
+              this.points += 1
+
+              if (this.points % 5 === 0) {
+                this.nextLevel()
+              }
+            }
+
+            // Candy is not between cup bounds.
+          } else {
+            this.candies.splice(index, 1)
           }
         }
       })
@@ -83,6 +110,13 @@ class Game {
     p.fill("#ffffff")
     p.text(`Points: ${this.points}`, 10, 20)
     p.text(`Level: ${this.level}`, 10, 40)
+    p.text(
+      `Strikes: ${Array.from(Array(this.strikes))
+        .map(() => "❌")
+        .join(" ")}`,
+      10,
+      60
+    )
     p.pop()
 
     if (this.gameState === GAME_STATE.PAUSED) {
@@ -95,6 +129,19 @@ class Game {
       p.textSize(48)
       p.textStyle(p.BOLD)
       p.text("PAUSED", this.width / 2, this.height / 2)
+      p.pop()
+    }
+
+    if (this.gameState === GAME_STATE.END_GAME) {
+      p.push()
+      p.noStroke()
+      p.fill("#ffffff88")
+      p.rect(0, 0, this.width, this.height)
+      p.fill("#000000")
+      p.textAlign(p.CENTER, p.CENTER)
+      p.textSize(48)
+      p.textStyle(p.BOLD)
+      p.text("END GAME", this.width / 2, this.height / 2)
       p.pop()
     }
   }
