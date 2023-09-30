@@ -1,28 +1,43 @@
 import Candy from "./Candy"
 import Cup from "./cup"
 
+export const GAME_STATE = {
+  MAIN_SCREEN: 0,
+  PLAYING: 1,
+  PAUSED: 2,
+}
+
 class Game {
-  constructor(width, height) {
+  constructor(p, width, height, gameState) {
+    this.p = p
+
     this.width = width
     this.height = height
 
     this.points = 0
     this.level = 0
     // this.maxCandies = 0
-    this.candySpeed = 0
     this.candies = []
+    this.velocityLimit = 2
 
-    this.cup = new Cup(this.width, this.height)
+    this.cup = new Cup(this.p, this.width, this.height)
+
+    this.gameState = gameState
   }
 
   nextLevel() {
     this.level += 1
     // this.maxCandies += 1
-    this.candySpeed += 2
+
+    this.velocityLimit += 1
 
     // for (let i = 0; i < this.maxCandies; i++) {
-    this.candies.push(new Candy(this.width, this.height))
+    this.candies.push(
+      new Candy(this.p, this.width, this.height, this.candySpeed)
+    )
     // }
+
+    this.candies.forEach((candy) => candy.setVelocityLimit(this.velocityLimit))
   }
 
   keyEvents(p) {
@@ -36,27 +51,43 @@ class Game {
   }
 
   update(p) {
-    this.candies.forEach((candy) => candy.update())
+    if (this.gameState === GAME_STATE.PLAYING) {
+      this.candies.forEach((candy) => candy.update())
 
-    this.candies.forEach((candy) => {
-      if (
-        candy.pX > this.cup.pX &&
-        candy.pX < this.cup.pX + this.cup.size &&
-        candy.pY > this.cup.pY
-      ) {
-        candy.pX = Math.random() * this.height
-        candy.pY = 0
+      this.candies.forEach((candy) => {
+        if (
+          candy.position.x > this.cup.position.x &&
+          candy.position.x < this.cup.position.x + this.cup.size &&
+          candy.position.y > this.cup.position.y
+        ) {
+          candy.position.x = Math.random() * this.height
+          candy.position.y = 0
 
-        this.points += 1
-      }
-    })
+          this.points += 1
 
-    this.keyEvents(p)
+          if (this.points % 5 === 0) {
+            this.nextLevel()
+          }
+        }
+      })
+
+      this.keyEvents(p)
+    }
   }
 
   draw(p) {
     this.candies.forEach((candy) => candy.draw(p))
     this.cup.draw(p)
+
+    p.push()
+    p.fill("#ffffff")
+    p.text(`Points: ${this.points}`, 10, 20)
+    p.text(`Level: ${this.level}`, 10, 40)
+    p.pop()
+  }
+
+  setGameState(gameState) {
+    this.gameState = gameState
   }
 }
 
