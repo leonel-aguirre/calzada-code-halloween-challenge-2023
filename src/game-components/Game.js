@@ -21,14 +21,19 @@ class Game {
     this.level = 0
     // this.maxCandies = 0
     this.candies = []
-    this.velocityLimit = 2
+    // this.velocityLimit = 2
+    // this.minCandyVelocity = 1
+    this.maxCandyVelocity = 2
 
     this.cup = new Cup(this.p, this.width, this.height)
 
     this.gameState = gameState
 
-    this.candyAppearanceRate = 1000
+    this.candyAppearanceRate = 2000
     // this.candyAppearanceProbability
+
+    this.streak = 0
+    this.maxStreak = 0
 
     this.strikes = 0
   }
@@ -37,7 +42,15 @@ class Game {
     this.level += 1
     // this.maxCandies += 1
 
-    this.velocityLimit += 1
+    // this.velocityLimit += 1
+
+    // this.minCandyVelocity += 1
+    this.maxCandyVelocity += 0.5
+
+    this.candyAppearanceRate =
+      this.candyAppearanceRate > 500
+        ? this.candyAppearanceRate - 100
+        : this.candyAppearanceRate
 
     // for (let i = 0; i < this.maxCandies; i++) {
     // this.candies.push(
@@ -61,7 +74,7 @@ class Game {
   update(p) {
     if (this.gameState === GAME_STATE.PLAYING) {
       if (p.millis() >= this.candyAppearanceRate + this.timer) {
-        this.candies.push(new Candy(this.p, this.width, this.velocityLimit))
+        this.candies.push(new Candy(this.p, this.width, this.maxCandyVelocity))
         this.timer = p.millis()
       }
 
@@ -72,8 +85,9 @@ class Game {
         if (candy.position.y > this.cup.position.y) {
           // Candy is between cup bounds.
           if (
-            candy.position.x > this.cup.position.x &&
-            candy.position.x < this.cup.position.x + this.cup.size
+            candy.position.x > this.cup.position.x - candy.size / 2 &&
+            candy.position.x <
+              this.cup.position.x + candy.size / 2 + this.cup.size
           ) {
             const [caughtCandy] = this.candies.splice(index, 1)
 
@@ -85,6 +99,7 @@ class Game {
               }
             } else {
               this.points += 1
+              this.streak += 1
 
               if (this.points % 5 === 0) {
                 this.nextLevel()
@@ -93,7 +108,11 @@ class Game {
 
             // Candy is not between cup bounds.
           } else {
-            this.candies.splice(index, 1)
+            const [fallenCandy] = this.candies.splice(index, 1)
+
+            if (!fallenCandy.isSuspicious) {
+              this.streak = 0
+            }
           }
         }
       })
@@ -109,13 +128,14 @@ class Game {
     p.push()
     p.fill("#ffffff")
     p.text(`Points: ${this.points}`, 10, 20)
-    p.text(`Level: ${this.level}`, 10, 40)
+    p.text(`Streak: ${this.streak}`, 10, 40)
+    p.text(`Level: ${this.level}`, 10, 60)
     p.text(
       `Strikes: ${Array.from(Array(this.strikes))
         .map(() => "❌")
         .join(" ")}`,
       10,
-      60
+      80
     )
     p.pop()
 
