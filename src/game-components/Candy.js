@@ -1,14 +1,12 @@
-const realCandyList = ["🍭", "🍬", "🍫", ""] && ["o"]
-const suspiciousCandyList = ["👻", "🎃", "🕸", "🦇"] && ["x"]
-
 class Candy {
-  constructor(p, maxX, maxVelocity) {
+  constructor(p, maxX, maxVelocity, goodCandiesImages, badCandiesImages) {
     this.p = p
 
-    this.isSuspicious = Math.random() <= 0.4
-    this.candyList = this.isSuspicious ? suspiciousCandyList : realCandyList
-    this.emoji =
-      this.candyList[Math.floor(Math.random() * this.candyList.length)]
+    this.isBad = Math.random() <= 0.4
+    this.candyImages = this.isBad ? badCandiesImages : goodCandiesImages
+    this.image =
+      this.candyImages[Math.floor(Math.random() * this.candyImages.length)]
+
     this.angle = Math.random() * p.TWO_PI
     this.position = p.createVector(40 + Math.random() * (maxX - 40), 0)
 
@@ -18,8 +16,6 @@ class Candy {
     this.acceleration = p.createVector(0, 2)
     this.velocityLimit = maxVelocity - 1 + Math.random() * 2
     this.size = 38 + Math.random() * 40
-
-    console.log(this.size)
   }
 
   update() {
@@ -32,13 +28,20 @@ class Candy {
 
   draw(p) {
     // p.ellipse(this.position.x, this.position.y, 10, 10)
-    p.fill(255)
+    // p.fill(255)
     p.push()
     p.translate(this.position.x, this.position.y)
     p.rotate(this.angle)
-    p.textAlign(p.CENTER, p.CENTER)
-    p.textSize(this.size)
-    p.text(this.emoji, 0, 0)
+    // p.textAlign(p.CENTER, p.CENTER)
+    // p.textSize(this.size)
+    p.image(
+      this.image,
+      0 - this.size / 2,
+      0 - this.size / 2,
+      this.size,
+      this.size
+    )
+    // p.text(this.emoji, 0, 0)
     // p.textSize(24)
     // p.fill(255)
     // p.rotate(-this.angle)

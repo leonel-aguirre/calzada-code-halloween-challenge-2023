@@ -9,7 +9,14 @@ export const GAME_STATE = {
 }
 
 class Game {
-  constructor(p, width, height, gameState) {
+  constructor(
+    p,
+    width,
+    height,
+    gameState,
+    goodCandiesImages,
+    badCandiesImages
+  ) {
     this.p = p
 
     this.width = width
@@ -36,6 +43,9 @@ class Game {
     this.maxStreak = 0
 
     this.strikes = 0
+
+    this.goodCandiesImages = goodCandiesImages
+    this.badCandiesImages = badCandiesImages
   }
 
   reset() {
@@ -82,7 +92,15 @@ class Game {
   update(p) {
     if (this.gameState === GAME_STATE.PLAYING) {
       if (p.millis() >= this.candyAppearanceRate + this.timer) {
-        this.candies.push(new Candy(this.p, this.width, this.maxCandyVelocity))
+        this.candies.push(
+          new Candy(
+            this.p,
+            this.width,
+            this.maxCandyVelocity,
+            this.goodCandiesImages,
+            this.badCandiesImages
+          )
+        )
         this.timer = p.millis()
       }
 
@@ -99,7 +117,7 @@ class Game {
           ) {
             const [caughtCandy] = this.candies.splice(index, 1)
 
-            if (caughtCandy.isSuspicious) {
+            if (caughtCandy.isBad) {
               this.strikes += 1
 
               if (this.strikes === 3) {
@@ -118,7 +136,7 @@ class Game {
           } else {
             const [fallenCandy] = this.candies.splice(index, 1)
 
-            if (!fallenCandy.isSuspicious) {
+            if (!fallenCandy.isBad) {
               this.streak = 0
             }
           }
