@@ -9,7 +9,7 @@ export const GAME_STATE = {
 }
 
 class Game {
-  constructor(p, width, height, goodCandiesImages, badCandiesImages, cupImage) {
+  constructor(p, width, height, images) {
     this.p = p
 
     this.width = width
@@ -25,7 +25,7 @@ class Game {
     // this.minCandyVelocity = 1
     this.maxCandyVelocity = 2
 
-    this.cup = new Cup(this.p, this.width, this.height, cupImage)
+    this.cup = new Cup(this.p, this.width, this.height, images.cupImage)
 
     this.gameState = GAME_STATE.MAIN_SCREEN
 
@@ -37,8 +37,7 @@ class Game {
 
     this.strikes = 0
 
-    this.goodCandiesImages = goodCandiesImages
-    this.badCandiesImages = badCandiesImages
+    this.images = images
   }
 
   reset() {
@@ -90,8 +89,8 @@ class Game {
             this.p,
             this.width,
             this.maxCandyVelocity,
-            this.goodCandiesImages,
-            this.badCandiesImages
+            this.images.goodCandiesImages,
+            this.images.badCandiesImages
           )
         )
         this.timer = p.millis()
@@ -141,6 +140,10 @@ class Game {
   }
 
   draw(p) {
+    const { backgroundImage, mainScreenImage } = this.images
+
+    p.image(backgroundImage, 0, 0, this.width, this.height)
+
     // const lines = 20
     // const lineHeight = this.height / lines
 
@@ -157,14 +160,21 @@ class Game {
       p.push()
       p.noStroke()
       p.fill("#ffffff88")
-      p.rect(0, 0, this.width, this.height)
-      p.fill("#240345")
+      // p.rect(0, 0, this.width, this.height)
+      p.fill("#c9c9c9")
       p.textAlign(p.CENTER, p.CENTER)
       p.textSize(48)
       p.textStyle(p.BOLD)
-      p.text("TITLE", this.width / 2, this.height / 2)
+      p.image(
+        mainScreenImage,
+        (this.width - 1014 / 2) / 2,
+        this.height / 4,
+        1014 / 2,
+        368 / 2
+      )
+      // p.text("TITLE", this.width / 2, this.height / 2)
       p.textSize(16)
-      p.text('PRESS "SPACE" TO PLAY', this.width / 2, this.height / 2 + 48)
+      p.text('PRESS "SPACE" TO PLAY', this.width / 2, this.height / 2 + 60)
       p.pop()
     }
 

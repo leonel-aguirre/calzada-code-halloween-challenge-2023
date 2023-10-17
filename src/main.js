@@ -5,9 +5,12 @@ import Game, { GAME_STATE } from "./game-components/Game"
 const WIDTH = 600
 const HEIGHT = 600
 
+const assetURLPrefix = "../assets"
+
 let game
 
 let backgroundImage
+let mainScreenImage
 let goodCandiesImages = ["a", "b", "c", "d", "e", "f"]
 let badCandiesImages = ["v", "w", "x", "y", "z"]
 let cupImage
@@ -19,27 +22,27 @@ let cupImage
  */
 const sketch = (p) => {
   p.preload = () => {
-    backgroundImage = p.loadImage("../assets/background.jpg")
+    backgroundImage = p.loadImage(`${assetURLPrefix}/background.jpg`)
+    mainScreenImage = p.loadImage(`${assetURLPrefix}/main-screen.png`)
     goodCandiesImages = goodCandiesImages.map((indexLetter) =>
-      p.loadImage(`../assets/candy-${indexLetter}.png`)
+      p.loadImage(`${assetURLPrefix}/candy-${indexLetter}.png`)
     )
     badCandiesImages = badCandiesImages.map((indexLetter) =>
-      p.loadImage(`../assets/candy-${indexLetter}.png`)
+      p.loadImage(`${assetURLPrefix}/candy-${indexLetter}.png`)
     )
-    cupImage = p.loadImage("../assets/cup.png")
+    cupImage = p.loadImage(`${assetURLPrefix}/cup.png`)
   }
 
   // Sketch setup.
   p.setup = () => {
     let canvas = p.createCanvas(WIDTH, HEIGHT)
-    game = new Game(
-      p,
-      WIDTH,
-      HEIGHT,
+    game = new Game(p, WIDTH, HEIGHT, {
+      backgroundImage,
+      mainScreenImage,
       goodCandiesImages,
       badCandiesImages,
-      cupImage
-    )
+      cupImage,
+    })
     canvas.parent("Canvas")
     p.background("black")
 
@@ -48,8 +51,6 @@ const sketch = (p) => {
 
   // Draw loop.
   p.draw = () => {
-    p.image(backgroundImage, 0, 0, WIDTH, HEIGHT)
-
     game.draw(p)
     game.update(p)
   }
