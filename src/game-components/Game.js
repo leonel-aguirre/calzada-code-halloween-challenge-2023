@@ -12,7 +12,7 @@ export const GAME_STATE = {
 }
 
 /**
- * Class for Game object.
+ * Game class.
  */
 class Game {
   /**
