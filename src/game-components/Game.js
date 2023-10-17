@@ -5,18 +5,11 @@ export const GAME_STATE = {
   MAIN_SCREEN: 0,
   PLAYING: 1,
   PAUSED: 2,
-  END_GAME: 3,
+  GAME_OVER: 3,
 }
 
 class Game {
-  constructor(
-    p,
-    width,
-    height,
-    gameState,
-    goodCandiesImages,
-    badCandiesImages
-  ) {
+  constructor(p, width, height, goodCandiesImages, badCandiesImages, cupImage) {
     this.p = p
 
     this.width = width
@@ -32,9 +25,9 @@ class Game {
     // this.minCandyVelocity = 1
     this.maxCandyVelocity = 2
 
-    this.cup = new Cup(this.p, this.width, this.height)
+    this.cup = new Cup(this.p, this.width, this.height, cupImage)
 
-    this.gameState = gameState
+    this.gameState = GAME_STATE.MAIN_SCREEN
 
     this.candyAppearanceRate = 2000
     // this.candyAppearanceProbability
@@ -121,7 +114,7 @@ class Game {
               this.strikes += 1
 
               if (this.strikes === 3) {
-                this.gameState = GAME_STATE.END_GAME
+                this.gameState = GAME_STATE.GAME_OVER
               }
             } else {
               this.points += 1
@@ -160,46 +153,80 @@ class Game {
     // }
     // p.pop()
 
-    this.candies.forEach((candy) => candy.draw(p))
-    this.cup.draw(p)
+    if (this.gameState === GAME_STATE.MAIN_SCREEN) {
+      p.push()
+      p.noStroke()
+      p.fill("#ffffff88")
+      p.rect(0, 0, this.width, this.height)
+      p.fill("#240345")
+      p.textAlign(p.CENTER, p.CENTER)
+      p.textSize(48)
+      p.textStyle(p.BOLD)
+      p.text("TITLE", this.width / 2, this.height / 2)
+      p.textSize(16)
+      p.text('PRESS "SPACE" TO PLAY', this.width / 2, this.height / 2 + 48)
+      p.pop()
+    }
 
-    p.push()
-    p.fill("#ffffff")
-    p.text(`Points: ${this.points}`, 10, 20)
-    p.text(`Streak: ${this.streak}`, 10, 40)
-    p.text(`Level: ${this.level}`, 10, 60)
-    p.text(
-      `Strikes: ${Array.from(Array(this.strikes))
-        .map(() => "❌")
-        .join(" ")}`,
-      10,
-      80
-    )
-    p.pop()
+    if (this.gameState === GAME_STATE.PLAYING) {
+      this.candies.forEach((candy) => candy.draw(p))
+      this.cup.draw(p)
+    }
 
     if (this.gameState === GAME_STATE.PAUSED) {
       p.push()
       p.noStroke()
       p.fill("#ffffff88")
       p.rect(0, 0, this.width, this.height)
-      p.fill("#000000")
+      p.fill("#240345")
       p.textAlign(p.CENTER, p.CENTER)
       p.textSize(48)
       p.textStyle(p.BOLD)
       p.text("PAUSED", this.width / 2, this.height / 2)
+      p.textSize(16)
+      p.text(
+        'PRESS "ESC" OR "SPACE" TO RESUME',
+        this.width / 2,
+        this.height / 2 + 48
+      )
       p.pop()
     }
 
-    if (this.gameState === GAME_STATE.END_GAME) {
+    if (this.gameState === GAME_STATE.GAME_OVER) {
       p.push()
       p.noStroke()
       p.fill("#ffffff88")
       p.rect(0, 0, this.width, this.height)
-      p.fill("#000000")
+      p.fill("#240345")
       p.textAlign(p.CENTER, p.CENTER)
       p.textSize(48)
       p.textStyle(p.BOLD)
-      p.text("END GAME", this.width / 2, this.height / 2)
+      p.text("GAME OVER", this.width / 2, this.height / 2)
+      p.textSize(16)
+      p.text(
+        'PRESS "SPACE" TO PLAY AGAIN',
+        this.width / 2,
+        this.height / 2 + 48
+      )
+      p.pop()
+    }
+
+    if (this.gameState !== GAME_STATE.MAIN_SCREEN) {
+      p.push()
+      p.stroke("#fddafe")
+      p.fill("#240345")
+      p.strokeWeight(3)
+      p.textSize(14)
+      p.text(`Points: ${this.points}`, 10, 25)
+      p.text(`Streak: ${this.streak}`, 10, 50)
+      p.text(`Level: ${this.level}`, 10, 75)
+      p.text(
+        `Strikes: ${Array.from(Array(this.strikes))
+          .map(() => "❌")
+          .join(" ")}`,
+        10,
+        100
+      )
       p.pop()
     }
   }

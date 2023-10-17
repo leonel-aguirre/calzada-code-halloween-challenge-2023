@@ -1,5 +1,5 @@
 class Cup {
-  constructor(p, screenWidth, screenHeight) {
+  constructor(p, screenWidth, screenHeight, image) {
     this.p = p
 
     this.screenWidth = screenWidth
@@ -11,6 +11,8 @@ class Cup {
       screenWidth / 2 - this.size / 2,
       screenHeight - 40
     )
+
+    this.image = image
   }
 
   /**
@@ -20,7 +22,7 @@ class Cup {
    */
   draw(p) {
     p.push()
-    p.rect(this.position.x, this.position.y, this.size, 20)
+    p.image(this.image, this.position.x, this.position.y, this.size, this.size)
     p.pop()
   }
 

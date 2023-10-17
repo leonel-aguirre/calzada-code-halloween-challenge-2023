@@ -10,6 +10,7 @@ let game
 let backgroundImage
 let goodCandiesImages = ["a", "b", "c", "d", "e", "f"]
 let badCandiesImages = ["v", "w", "x", "y", "z"]
+let cupImage
 
 /**
  * Displays a p5 sketch.
@@ -25,20 +26,19 @@ const sketch = (p) => {
     badCandiesImages = badCandiesImages.map((indexLetter) =>
       p.loadImage(`../assets/candy-${indexLetter}.png`)
     )
+    cupImage = p.loadImage("../assets/cup.png")
   }
 
   // Sketch setup.
   p.setup = () => {
-    console.log({ goodCandiesImages, badCandiesImages })
-
     let canvas = p.createCanvas(WIDTH, HEIGHT)
     game = new Game(
       p,
       WIDTH,
       HEIGHT,
-      GAME_STATE.PAUSED,
       goodCandiesImages,
-      badCandiesImages
+      badCandiesImages,
+      cupImage
     )
     canvas.parent("Canvas")
     p.background("black")
@@ -54,25 +54,34 @@ const sketch = (p) => {
     game.update(p)
   }
 
-  p.keyTyped = () => {
-    if (p.keyCode === 32) {
-      if (
-        game.gameState === GAME_STATE.PAUSED ||
-        game.gameState === GAME_STATE.PLAYING
-      ) {
-        let isGamePaused = game.gameState === GAME_STATE.PAUSED
-
-        if (isGamePaused) {
+  p.keyPressed = () => {
+    switch (game.gameState) {
+      case GAME_STATE.MAIN_SCREEN:
+        // SPACE.
+        if (p.keyCode === 32) {
+          game.reset()
           game.setGameState(GAME_STATE.PLAYING)
-        } else {
+        }
+        break
+      case GAME_STATE.PLAYING:
+        // SPACE or ESC.
+        if (p.keyCode === 27 || p.keyCode === 32) {
           game.setGameState(GAME_STATE.PAUSED)
         }
-      }
-
-      if (game.gameState === GAME_STATE.END_GAME) {
-        game.reset()
-        game.setGameState(GAME_STATE.PLAYING)
-      }
+        break
+      case GAME_STATE.PAUSED:
+        // SPACE or ESC.
+        if (p.keyCode === 27 || p.keyCode === 32) {
+          game.setGameState(GAME_STATE.PLAYING)
+        }
+        break
+      case GAME_STATE.GAME_OVER:
+        // SPACE.
+        if (p.keyCode === 32) {
+          game.reset()
+          game.setGameState(GAME_STATE.PLAYING)
+        }
+        break
     }
   }
 }
