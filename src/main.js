@@ -7,12 +7,18 @@ const HEIGHT = 500
 
 let game
 
+let backgroundImage
+
 /**
  * Displays a p5 sketch.
  *
  * @param {p5} p p5 object reference.
  */
 const sketch = (p) => {
+  p.preload = () => {
+    backgroundImage = p.loadImage("../assets/background.jpg")
+  }
+
   // Sketch setup.
   p.setup = () => {
     let canvas = p.createCanvas(WIDTH, HEIGHT)
@@ -20,29 +26,35 @@ const sketch = (p) => {
     canvas.parent("Canvas")
     p.background("black")
 
-    game.nextLevel()
+    game.levelUp()
   }
 
   // Draw loop.
   p.draw = () => {
-    p.background("black")
+    p.image(backgroundImage, 0, 0, WIDTH, HEIGHT)
 
     game.draw(p)
     game.update(p)
   }
 
   p.keyTyped = () => {
-    if (
-      p.keyCode === 32 &&
-      (game.gameState === GAME_STATE.PAUSED ||
-        game.gameState === GAME_STATE.PLAYING)
-    ) {
-      let isGamePaused = game.gameState === GAME_STATE.PAUSED
+    if (p.keyCode === 32) {
+      if (
+        game.gameState === GAME_STATE.PAUSED ||
+        game.gameState === GAME_STATE.PLAYING
+      ) {
+        let isGamePaused = game.gameState === GAME_STATE.PAUSED
 
-      if (isGamePaused) {
+        if (isGamePaused) {
+          game.setGameState(GAME_STATE.PLAYING)
+        } else {
+          game.setGameState(GAME_STATE.PAUSED)
+        }
+      }
+
+      if (game.gameState === GAME_STATE.END_GAME) {
+        game.reset()
         game.setGameState(GAME_STATE.PLAYING)
-      } else {
-        game.setGameState(GAME_STATE.PAUSED)
       }
     }
   }

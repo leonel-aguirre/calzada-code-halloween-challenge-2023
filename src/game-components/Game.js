@@ -38,7 +38,15 @@ class Game {
     this.strikes = 0
   }
 
-  nextLevel() {
+  reset() {
+    this.points = 0
+    this.streak = 0
+    this.strikes = 0
+    this.level = 1
+    this.candies = []
+  }
+
+  levelUp() {
     this.level += 1
     // this.maxCandies += 1
 
@@ -102,7 +110,7 @@ class Game {
               this.streak += 1
 
               if (this.points % 5 === 0) {
-                this.nextLevel()
+                this.levelUp()
               }
             }
 
@@ -122,6 +130,18 @@ class Game {
   }
 
   draw(p) {
+    // const lines = 20
+    // const lineHeight = this.height / lines
+
+    // p.push()
+    // p.noStroke()
+
+    // for (let i = 0; i < lines; i++) {
+    //   p.fill(i % 2 === 0 ? "#ff5722" : "#673ab7")
+    //   p.rect(0, lineHeight * i, this.width, lineHeight * (i + 1))
+    // }
+    // p.pop()
+
     this.candies.forEach((candy) => candy.draw(p))
     this.cup.draw(p)
 
