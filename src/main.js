@@ -52,6 +52,14 @@ const sketch = (p) => {
     p.background("black")
 
     game.levelUp()
+
+    document
+      .querySelector("#InstructionsSection")
+      .classList.remove("app__instructions-section--is-hidden")
+
+    document
+      .querySelector("#Canvas")
+      .classList.remove("app__canvas-wrapper--no-border")
   }
 
   // Draw loop.

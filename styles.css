@@ -31,18 +31,41 @@ h3 {
 
 .app {
   display: flex;
-  max-width: 80vw;
+  margin: 0 80px;
 }
 
 .app__canvas-wrapper {
   border: 8px solid var(--canvas-border-color);
   border-radius: 10px;
+  height: 616px;
+}
+
+.app__canvas-wrapper--no-border {
+  border: none;
 }
 
 .app__instructions-section {
   margin-left: 24px;
+  padding-right: 16px;
   display: flex;
   flex-direction: column;
+  max-width: 600px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.app__instructions-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.app__instructions-section::-webkit-scrollbar-track {
+  background-color: #ffffff44;
+  border-radius: 10px;
+}
+
+.app__instructions-section::-webkit-scrollbar-thumb {
+  background-color: #ffffff44;
+  border-radius: 10px;
 }
 
 .app__instructions-title {
@@ -86,4 +109,8 @@ h3 {
 
 .app__link {
   color: var(--green-highlight-color);
+}
+
+.app__instructions-section--is-hidden {
+  display: none;
 }
