@@ -2,8 +2,8 @@ import p5 from "p5"
 
 import Game, { GAME_STATE } from "./game-components/Game"
 
-const WIDTH = 500
-const HEIGHT = 500
+const WIDTH = 600
+const HEIGHT = 600
 
 let game
 

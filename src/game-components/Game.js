@@ -216,16 +216,16 @@ class Game {
       p.stroke("#fddafe")
       p.fill("#240345")
       p.strokeWeight(3)
-      p.textSize(14)
-      p.text(`Points: ${this.points}`, 10, 25)
-      p.text(`Streak: ${this.streak}`, 10, 50)
-      p.text(`Level: ${this.level}`, 10, 75)
+      p.textSize(20)
+      p.text(`Points: ${this.points}`, 10, 30)
+      p.text(`Streak: ${this.streak}`, 10, 60)
+      p.text(`Level: ${this.level}`, 10, 90)
       p.text(
         `Strikes: ${Array.from(Array(this.strikes))
           .map(() => "❌")
           .join(" ")}`,
         10,
-        100
+        120
       )
       p.pop()
     }
