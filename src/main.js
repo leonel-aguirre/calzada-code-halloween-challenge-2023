@@ -2,13 +2,17 @@ import p5 from "p5"
 
 import Game, { GAME_STATE } from "./game-components/Game"
 
+// Canvas Width and Height.
 const WIDTH = 600
 const HEIGHT = 600
 
+// Update based on image location.
 const assetURLPrefix = "../assets"
 
+// Game instance variable.
 let game
 
+// Game images initial values.
 let backgroundImage
 let mainScreenImage
 let goodCandiesImages = ["a", "b", "c", "d", "e", "f"]
@@ -21,6 +25,7 @@ let cupImage
  * @param {p5} p p5 object reference.
  */
 const sketch = (p) => {
+  // Preloads game images.
   p.preload = () => {
     backgroundImage = p.loadImage(`${assetURLPrefix}/background.jpg`)
     mainScreenImage = p.loadImage(`${assetURLPrefix}/main-screen.png`)
@@ -87,4 +92,5 @@ const sketch = (p) => {
   }
 }
 
+// p5 Instance.
 new p5(sketch)
